@@ -1,0 +1,165 @@
+model Product {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  brandId Int   @map("brand_id")
+  brand   Brand @relation(fields: [brandId], references: [id])
+
+  categoryId Int      @map("category_id")
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  currentPrice Int
+  oldPrice Int?
+
+  badge   Badge? @relation(fields: [badgeId], references: [id])
+  badgeId Int?   @map("badge_id")
+
+  images Image[]
+
+  productInfo   ProductInfo[]
+
+  configuration Configuration?
+
+  isPopular Boolean @default(false)
+  isFavorite Boolean @default(false)
+
+  @@map("products")
+}
+
+model Brand {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  products Product[]
+
+  @@map("brands")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Badge {
+  id Int @id @default(autoincrement())
+
+  backgroundColor String @map("background_color")
+  color           String
+  text            String
+
+  products Product[]
+
+  @@map("badges")
+}
+
+model Image {
+  id  Int    @id @default(autoincrement())
+  url String
+
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("images")
+}
+
+model ProductInfo {
+  id      Int              @id @default(autoincrement())
+  details ProductDetails[]
+  title   String
+
+  product Product @relation(fields: [productId], references: [id])
+  productId Int @map("product_id")
+
+  @@map("product_info")
+}
+
+model ProductDetails {
+  id            Int          @id @default(autoincrement())
+  info          String
+  title         String?
+  ProductInfo   ProductInfo? @relation(fields: [productInfoId], references: [id])
+  productInfoId Int?         @map("product_info_id")
+
+  @@map("product_details")
+}
+
+model Configuration {
+  id     Int     @id @default(autoincrement())
+  colors   Color?  @relation(fields: [colorsId], references: [id], onDelete: Cascade)
+  colorsId Int     @unique @map("colors_id")
+  sizes  Size? @relation(fields: [sizesId], references: [id], onDelete: Cascade)
+  sizesId Int @unique @map("sizes_id")
+
+  product   Product? @relation(fields: [productId], references: [id])
+  productId Int?     @unique @map("product_id")
+
+  @@map("configurations")
+}
+
+model Color {
+  id              Int    @id @default(autoincrement())
+  title           String
+  type            String
+
+  configuration   Configuration?
+
+  values ColorValueOnColor[]
+
+  @@map("colors")
+}
+
+model ColorValue {
+  id    Int    @id @default(autoincrement())
+  color String @unique
+  value String @unique
+
+  values ColorValueOnColor[]
+
+  @@map("color_value")
+}
+
+model ColorValueOnColor {
+  colorId      Int
+  colorValueId Int
+
+  color      Color      @relation(fields: [colorId], references: [id])
+  colorValue ColorValue @relation(fields: [colorValueId], references: [id])
+
+  @@id([colorId, colorValueId])
+  @@map("color_value_on_color")
+}
+
+model Size {
+  id              Int               @id @default(autoincrement())
+  values          SizeValueOnSize[]
+  title           String
+  type            String
+
+  configuration Configuration?
+
+  @@map("sizes")
+}
+
+model SizeValue {
+  id    Int @id @default(autoincrement())
+  value Int @unique
+
+  sizes SizeValueOnSize[]
+
+  @@map("size_values")
+}
+
+model SizeValueOnSize {
+  sizeId      Int
+  sizeValueId Int
+
+  size      Size      @relation(fields: [sizeId], references: [id])
+  sizeValue SizeValue @relation(fields: [sizeValueId], references: [id])
+
+  @@id([sizeId, sizeValueId])
+  @@map("size_value_on_size")
+}
