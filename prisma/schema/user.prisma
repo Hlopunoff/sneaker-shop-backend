@@ -1,0 +1,84 @@
+model User {
+  id Int @id @default(autoincrement())
+
+  email String @unique
+
+  password String
+
+  refreshToken RefreshToken?
+
+  favorites Favorites[]
+  cart      Cart[]
+  orders Order[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  token String @unique
+
+  userId Int  @unique @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expireDate DateTime @map("expire_date")
+
+  @@map("refresh_tokens")
+}
+
+model Favorites {
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @map("user_id")
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
+
+  @@id([userId, productId])
+  @@map("favorites")
+}
+
+model Cart {
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int  @map("user_id")
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
+
+  amount             Int
+  selectedSize       Int    @map("selected_size")
+  selectedColorValue String @map("selected_color_value")
+
+  @@unique([userId, productId, selectedColorValue, selectedSize])
+  @@map("carts")
+}
+
+model Order {
+  id String @id @default(uuid())
+
+  userId Int  @map("user_id")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deliveryDate String @map("delivery_date")
+  address String
+  total Int
+  createdAt DateTime @default(now()) @map("created_at")
+
+  orderItems OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  orderId String @map("order_id")
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+
+  amount Int
+  selectedSize       Int    @map("selected_size")
+  selectedColorValue String @map("selected_color_value")
+
+  @@map("order_items")
+}

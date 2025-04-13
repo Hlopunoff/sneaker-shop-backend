@@ -15,4 +15,10 @@ export class PlpController {
   async getListingByFilters(@Body() dto: FiltersDto) {
     return await this.plpService.getListingByFilters(dto);
   }
+
+  // TODO Переписать на квери параметры
+  @Post('filters')
+  async getFilters(@Body() dto: { category: string }) {
+    return await this.plpService.getFilters(dto.category);
+  }
 }

@@ -12,7 +12,7 @@ import {
   ColorValueClass,
 } from '../../../class';
 
-class ApiBrandDto {
+export class ApiBrandDto {
   @IsString()
   name: string;
 }
@@ -48,11 +48,13 @@ export class ApiSizeValueDto {
 }
 
 export class ApiProductConfigurationItemDto {
+  @IsOptional()
   @IsString()
-  title: string;
+  title?: string | null;
 
+  @IsOptional()
   @IsString()
-  type: string;
+  type?: string | null;
 
   @IsArray()
   values: ApiColorValueDto[] | ApiSizeValueDto[];

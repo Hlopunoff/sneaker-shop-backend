@@ -8,5 +8,6 @@ import { DatabaseModule } from 'src/database/database.module';
   controllers: [PdpController],
   imports: [DatabaseModule],
   providers: [PdpService, PdpRepository],
+  exports: [PdpService],
 })
 export class PdpModule {}

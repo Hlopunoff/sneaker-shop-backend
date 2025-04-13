@@ -128,6 +128,63 @@ CREATE TABLE "size_value_on_size" (
     CONSTRAINT "size_value_on_size_pkey" PRIMARY KEY ("sizeId","sizeValueId")
 );
 
+-- CreateTable
+CREATE TABLE "users" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "refresh_tokens" (
+    "token" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "expire_date" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "favorites" (
+    "user_id" INTEGER NOT NULL,
+    "product_id" INTEGER NOT NULL,
+
+    CONSTRAINT "favorites_pkey" PRIMARY KEY ("user_id","product_id")
+);
+
+-- CreateTable
+CREATE TABLE "carts" (
+    "user_id" INTEGER NOT NULL,
+    "product_id" INTEGER NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "selected_size" INTEGER NOT NULL,
+    "selected_color_value" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "orders" (
+    "id" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "delivery_date" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "total" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "order_items" (
+    "id" SERIAL NOT NULL,
+    "order_id" TEXT NOT NULL,
+    "productId" INTEGER NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "selected_size" INTEGER NOT NULL,
+    "selected_color_value" TEXT NOT NULL,
+
+    CONSTRAINT "order_items_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "brands_name_key" ON "brands"("name");
 
@@ -152,6 +209,18 @@ CREATE UNIQUE INDEX "color_value_value_key" ON "color_value"("value");
 -- CreateIndex
 CREATE UNIQUE INDEX "size_values_value_key" ON "size_values"("value");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "refresh_tokens_token_key" ON "refresh_tokens"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "refresh_tokens_user_id_key" ON "refresh_tokens"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "carts_user_id_product_id_selected_color_value_selected_size_key" ON "carts"("user_id", "product_id", "selected_color_value", "selected_size");
+
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_brand_id_fkey" FOREIGN KEY ("brand_id") REFERENCES "brands"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -162,13 +231,13 @@ ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("
 ALTER TABLE "products" ADD CONSTRAINT "products_badge_id_fkey" FOREIGN KEY ("badge_id") REFERENCES "badges"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "images" ADD CONSTRAINT "images_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "images" ADD CONSTRAINT "images_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "product_info" ADD CONSTRAINT "product_info_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "product_info" ADD CONSTRAINT "product_info_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "product_details" ADD CONSTRAINT "product_details_product_info_id_fkey" FOREIGN KEY ("product_info_id") REFERENCES "product_info"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "product_details" ADD CONSTRAINT "product_details_product_info_id_fkey" FOREIGN KEY ("product_info_id") REFERENCES "product_info"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "configurations" ADD CONSTRAINT "configurations_colors_id_fkey" FOREIGN KEY ("colors_id") REFERENCES "colors"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -177,7 +246,7 @@ ALTER TABLE "configurations" ADD CONSTRAINT "configurations_colors_id_fkey" FORE
 ALTER TABLE "configurations" ADD CONSTRAINT "configurations_sizes_id_fkey" FOREIGN KEY ("sizes_id") REFERENCES "sizes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "configurations" ADD CONSTRAINT "configurations_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "configurations" ADD CONSTRAINT "configurations_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "color_value_on_color" ADD CONSTRAINT "color_value_on_color_colorId_fkey" FOREIGN KEY ("colorId") REFERENCES "colors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -190,3 +259,27 @@ ALTER TABLE "size_value_on_size" ADD CONSTRAINT "size_value_on_size_sizeId_fkey"
 
 -- AddForeignKey
 ALTER TABLE "size_value_on_size" ADD CONSTRAINT "size_value_on_size_sizeValueId_fkey" FOREIGN KEY ("sizeValueId") REFERENCES "size_values"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "favorites" ADD CONSTRAINT "favorites_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "favorites" ADD CONSTRAINT "favorites_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "carts" ADD CONSTRAINT "carts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "carts" ADD CONSTRAINT "carts_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_items" ADD CONSTRAINT "order_items_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "order_items" ADD CONSTRAINT "order_items_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

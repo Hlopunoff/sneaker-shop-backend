@@ -18,6 +18,72 @@ export class PlpRepository {
     });
   }
 
+  async getFilters(category: string) {
+    return await this.databaseService.product.findMany({
+      where: {
+        category: {
+          name: category,
+        },
+      },
+      omit: {
+        badgeId: true,
+        brandId: true,
+        categoryId: true,
+        currentPrice: true,
+        id: true,
+        isFavorite: true,
+        isPopular: true,
+        name: true,
+        oldPrice: true,
+      },
+      include: {
+        brand: {
+          select: {
+            name: true,
+          },
+        },
+        configuration: {
+          omit: {
+            id: true,
+            productId: true,
+            colorsId: true,
+            sizesId: true,
+          },
+          include: {
+            colors: {
+              omit: {
+                id: true,
+                title: true,
+                type: true,
+              },
+              include: {
+                values: {
+                  select: {
+                    colorValue: true,
+                  },
+                },
+              },
+            },
+            sizes: {
+              omit: {
+                id: true,
+                title: true,
+                type: true,
+              },
+              include: {
+                values: {
+                  select: {
+                    sizeValue: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   async getListingByFilters(dto: FiltersDto) {
     const { category, color, size, brand } = dto;
 

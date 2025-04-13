@@ -1,3 +1,5 @@
+// TODO Переписать configuration, создавать ее в entity, чтобы упростить таблицы и уменьшить их кол-во
+
 model Product {
   id   Int    @id @default(autoincrement())
   name String
@@ -9,19 +11,23 @@ model Product {
   category   Category @relation(fields: [categoryId], references: [id])
 
   currentPrice Int
-  oldPrice Int?
+  oldPrice     Int?
 
   badge   Badge? @relation(fields: [badgeId], references: [id])
   badgeId Int?   @map("badge_id")
 
   images Image[]
 
-  productInfo   ProductInfo[]
+  productInfo ProductInfo[]
 
   configuration Configuration?
 
-  isPopular Boolean @default(false)
+  isPopular  Boolean @default(false)
   isFavorite Boolean @default(false)
+
+  favorites Favorites[]
+  cart      Cart[]
+  orderItems OrderItem[]
 
   @@map("products")
 }
@@ -61,7 +67,7 @@ model Image {
   url String
 
   productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("images")
 }
@@ -71,8 +77,8 @@ model ProductInfo {
   details ProductDetails[]
   title   String
 
-  product Product @relation(fields: [productId], references: [id])
-  productId Int @map("product_id")
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int     @map("product_id")
 
   @@map("product_info")
 }
@@ -81,31 +87,31 @@ model ProductDetails {
   id            Int          @id @default(autoincrement())
   info          String
   title         String?
-  ProductInfo   ProductInfo? @relation(fields: [productInfoId], references: [id])
+  ProductInfo   ProductInfo? @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
   productInfoId Int?         @map("product_info_id")
 
   @@map("product_details")
 }
 
 model Configuration {
-  id     Int     @id @default(autoincrement())
-  colors   Color?  @relation(fields: [colorsId], references: [id], onDelete: Cascade)
-  colorsId Int     @unique @map("colors_id")
-  sizes  Size? @relation(fields: [sizesId], references: [id], onDelete: Cascade)
-  sizesId Int @unique @map("sizes_id")
+  id       Int    @id @default(autoincrement())
+  colors   Color? @relation(fields: [colorsId], references: [id], onDelete: Cascade)
+  colorsId Int    @unique @map("colors_id")
+  sizes    Size?  @relation(fields: [sizesId], references: [id], onDelete: Cascade)
+  sizesId  Int    @unique @map("sizes_id")
 
-  product   Product? @relation(fields: [productId], references: [id])
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int?     @unique @map("product_id")
 
   @@map("configurations")
 }
 
 model Color {
-  id              Int    @id @default(autoincrement())
-  title           String
-  type            String
+  id    Int    @id @default(autoincrement())
+  title String
+  type  String
 
-  configuration   Configuration?
+  configuration Configuration?
 
   values ColorValueOnColor[]
 
@@ -134,10 +140,10 @@ model ColorValueOnColor {
 }
 
 model Size {
-  id              Int               @id @default(autoincrement())
-  values          SizeValueOnSize[]
-  title           String
-  type            String
+  id     Int               @id @default(autoincrement())
+  values SizeValueOnSize[]
+  title  String
+  type   String
 
   configuration Configuration?
 

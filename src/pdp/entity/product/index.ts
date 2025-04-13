@@ -89,15 +89,15 @@ class ProductConfigurationEntity {
 
 class PricesEntity {
   @IsNumber()
-  currentPrice: number;
+  current: number;
 
   @IsOptional()
   @IsNumber()
-  oldPrice?: number | null;
+  old?: number | null;
 
   constructor(data: ApiProductDto) {
-    this.currentPrice = data.currentPrice;
-    this.oldPrice = data.oldPrice;
+    this.current = data.currentPrice;
+    this.old = data.oldPrice;
   }
 }
 
@@ -171,10 +171,10 @@ export class ProductEntity {
   }
 
   private getDiscount() {
-    if (!this.prices.oldPrice) return;
+    if (!this.prices.old) return;
 
-    const { oldPrice, currentPrice } = this.prices;
+    const { old, current } = this.prices;
 
-    return +(1 - currentPrice / oldPrice).toPrecision(2) * 100;
+    return +(1 - current / old).toPrecision(2) * 100;
   }
 }
