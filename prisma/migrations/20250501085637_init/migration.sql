@@ -7,6 +7,11 @@ CREATE TABLE "products" (
     "currentPrice" INTEGER NOT NULL,
     "oldPrice" INTEGER,
     "badge_id" INTEGER,
+    "description" TEXT,
+    "material_id" INTEGER,
+    "season_id" INTEGER,
+    "sport_id" INTEGER,
+    "origin_id" INTEGER,
     "isPopular" BOOLEAN NOT NULL DEFAULT false,
     "isFavorite" BOOLEAN NOT NULL DEFAULT false,
 
@@ -30,6 +35,38 @@ CREATE TABLE "categories" (
 );
 
 -- CreateTable
+CREATE TABLE "materials" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "materials_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "seasons" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "seasons_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "sports" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "sports_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "origins" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "origins_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "badges" (
     "id" SERIAL NOT NULL,
     "background_color" TEXT NOT NULL,
@@ -46,25 +83,6 @@ CREATE TABLE "images" (
     "product_id" INTEGER NOT NULL,
 
     CONSTRAINT "images_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "product_info" (
-    "id" SERIAL NOT NULL,
-    "title" TEXT NOT NULL,
-    "product_id" INTEGER NOT NULL,
-
-    CONSTRAINT "product_info_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "product_details" (
-    "id" SERIAL NOT NULL,
-    "info" TEXT NOT NULL,
-    "title" TEXT,
-    "product_info_id" INTEGER,
-
-    CONSTRAINT "product_details_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -192,6 +210,18 @@ CREATE UNIQUE INDEX "brands_name_key" ON "brands"("name");
 CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "materials_name_key" ON "materials"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "seasons_name_key" ON "seasons"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "sports_name_key" ON "sports"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "origins_name_key" ON "origins"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "configurations_colors_id_key" ON "configurations"("colors_id");
 
 -- CreateIndex
@@ -231,13 +261,19 @@ ALTER TABLE "products" ADD CONSTRAINT "products_category_id_fkey" FOREIGN KEY ("
 ALTER TABLE "products" ADD CONSTRAINT "products_badge_id_fkey" FOREIGN KEY ("badge_id") REFERENCES "badges"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_material_id_fkey" FOREIGN KEY ("material_id") REFERENCES "materials"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_season_id_fkey" FOREIGN KEY ("season_id") REFERENCES "seasons"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_sport_id_fkey" FOREIGN KEY ("sport_id") REFERENCES "sports"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "products" ADD CONSTRAINT "products_origin_id_fkey" FOREIGN KEY ("origin_id") REFERENCES "origins"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "images" ADD CONSTRAINT "images_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "product_info" ADD CONSTRAINT "product_info_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "product_details" ADD CONSTRAINT "product_details_product_info_id_fkey" FOREIGN KEY ("product_info_id") REFERENCES "product_info"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "configurations" ADD CONSTRAINT "configurations_colors_id_fkey" FOREIGN KEY ("colors_id") REFERENCES "colors"("id") ON DELETE CASCADE ON UPDATE CASCADE;

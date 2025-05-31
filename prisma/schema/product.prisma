@@ -18,7 +18,19 @@ model Product {
 
   images Image[]
 
-  productInfo ProductInfo[]
+  description String?
+
+  materialId Int? @map("material_id")
+  material Material? @relation(fields: [materialId], references: [id])
+
+  seasonId Int? @map("season_id")
+  season Season? @relation(fields: [seasonId], references: [id])
+  
+  sportId Int? @map("sport_id")
+  sport Sport? @relation(fields: [sportId], references: [id])
+
+  originId Int? @map("origin_id")
+  origin Origin? @relation(fields: [originId], references: [id])
 
   configuration Configuration?
 
@@ -50,6 +62,42 @@ model Category {
   @@map("categories")
 }
 
+model Material {
+  id Int @id @default(autoincrement())
+  name String @unique
+
+  products Product[]
+
+  @@map("materials")
+}
+
+model Season {
+  id Int @id @default(autoincrement())
+  name String @unique
+
+  products Product[]
+
+  @@map("seasons")
+}
+
+model Sport {
+  id Int @id @default(autoincrement())
+  name String @unique
+
+  products Product[]
+
+  @@map("sports")
+}
+
+model Origin {
+  id Int @id @default(autoincrement())
+  name String @unique
+
+  products Product[]
+
+  @@map("origins")
+}
+
 model Badge {
   id Int @id @default(autoincrement())
 
@@ -70,27 +118,6 @@ model Image {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("images")
-}
-
-model ProductInfo {
-  id      Int              @id @default(autoincrement())
-  details ProductDetails[]
-  title   String
-
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId Int     @map("product_id")
-
-  @@map("product_info")
-}
-
-model ProductDetails {
-  id            Int          @id @default(autoincrement())
-  info          String
-  title         String?
-  ProductInfo   ProductInfo? @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
-  productInfoId Int?         @map("product_info_id")
-
-  @@map("product_details")
 }
 
 model Configuration {

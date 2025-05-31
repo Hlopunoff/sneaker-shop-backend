@@ -137,4 +137,13 @@ export class PlpRepository {
       ...PRODUCT_QUERY_BASE,
     });
   }
+
+  async getPlacements() {
+    return await this.databaseService.product.findMany({
+      where: {
+        isPopular: true,
+      },
+      ...PRODUCT_QUERY_BASE,
+    });
+  }
 }

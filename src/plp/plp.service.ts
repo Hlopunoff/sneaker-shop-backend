@@ -24,4 +24,10 @@ export class PlpService {
 
     return new FiltersEntity(apiDto);
   }
+
+  async getPlacements() {
+    const apiDto = await this.repository.getPlacements();
+
+    return new ProductsEntity(apiDto);
+  }
 }

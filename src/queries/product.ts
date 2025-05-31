@@ -3,6 +3,10 @@ export const PRODUCT_QUERY_BASE = {
     badgeId: true,
     brandId: true,
     categoryId: true,
+    seasonId: true,
+    materialId: true,
+    originId: true,
+    sportId: true,
   },
   include: {
     brand: {
@@ -15,6 +19,26 @@ export const PRODUCT_QUERY_BASE = {
         name: true,
       },
     },
+    season: {
+      select: {
+        name: true,
+      },
+    },
+    sport: {
+      select: {
+        name: true,
+      },
+    },
+    origin: {
+      select: {
+        name: true,
+      },
+    },
+    material: {
+      select: {
+        name: true,
+      },
+    },
     badge: {
       omit: {
         id: true,
@@ -23,20 +47,6 @@ export const PRODUCT_QUERY_BASE = {
     images: {
       select: {
         url: true,
-      },
-    },
-    productInfo: {
-      omit: {
-        id: true,
-        productId: true,
-      },
-      include: {
-        details: {
-          omit: {
-            id: true,
-            productInfoId: true,
-          },
-        },
       },
     },
     configuration: {

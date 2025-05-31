@@ -1,9 +1,21 @@
 import { PrismaClient } from '@prisma/client';
+import { seedImages } from './images.seed';
+import { seedConfiguration } from './configuration.seed';
 
 const prisma = new PrismaClient();
 
 const BRANDS = ['nike', 'adidas', 'reebok', 'mizuno'];
-const CATEGORIES = ['football', 'basketball', 'volleyball', 'tennis'];
+const CATEGORIES = [
+  'football',
+  'basketball',
+  'volleyball',
+  'tennis',
+  'running',
+];
+const SPORTS = ['Футбол', 'Баскетбол', 'Волейбол', 'Теннис', 'Бег'];
+const ORIGINS = ['Вьетнам', 'Индонезия'];
+const SEASONS = ['Мульти'];
+const MATERIALS = ['Резина', 'Текстиль'];
 
 const main = async () => {
   await Promise.all(
@@ -16,6 +28,30 @@ const main = async () => {
     ),
   );
 
+  await Promise.all(
+    SPORTS.map((sport) =>
+      prisma.sport.create({
+        data: {
+          name: sport,
+        },
+      }),
+    ),
+  );
+
+  await Promise.all(
+    ORIGINS.map((origin) => prisma.origin.create({ data: { name: origin } })),
+  );
+
+  await Promise.all(
+    SEASONS.map((season) => prisma.season.create({ data: { name: season } })),
+  );
+
+  await Promise.all(
+    MATERIALS.map((material) =>
+      prisma.material.create({ data: { name: material } }),
+    ),
+  );
+
   await prisma.badge.create({
     data: { backgroundColor: '#5D7EF1', color: '#fff', text: 'Топ продаж' },
   });
@@ -23,309 +59,56 @@ const main = async () => {
   await prisma.product.createMany({
     data: [
       {
-        name: 'LIGRA 7 M',
-        currentPrice: 5999,
-        oldPrice: 9999,
+        name: 'RUNFALCON 5',
+        currentPrice: 5199,
+        oldPrice: 7999,
         badgeId: 1,
         brandId: 2,
-        categoryId: 2,
+        categoryId: 5,
+        sportId: 5,
+        materialId: 2,
+        seasonId: 1,
+        originId: 1,
+        description:
+          'Кроссовки выполнены из "дышащего" текстиля с полимерными накладками из искусственной кожи. Подошва Cloudfoam ощущается мягкой и поддерживающей с первой минуты. Воздухопроницаемый сетчатый верх и прочная подошва Adiwear делают эти кроссовки идеальными для ношения в течение всего дня.',
+        isPopular: true,
       },
       {
-        name: 'GOLETTO VIII TF',
-        currentPrice: 5999,
-        oldPrice: 9999,
+        name: 'GALAXY 7 M',
+        currentPrice: 5199,
+        oldPrice: 6999,
         badgeId: 1,
-        brandId: 3,
-        categoryId: 2,
+        brandId: 2,
+        categoryId: 5,
+        sportId: 5,
+        materialId: 2,
+        seasonId: 1,
+        originId: 2,
+        description:
+          'Кроссовки GALAXY выполнены из текстиля с полимерными накладками из искусственной кожи. Модель с усиленным мысом. Детали: стандартная колодка, шнуровка для плотной фиксации стопы, текстильная подкладка, стелька с технологией OrthoLite®, амортизирующая промежуточная подошва Cloudfoam, резиновая подметка.',
+        isPopular: true,
       },
       {
-        name: 'WAVE EXCEED TOUR 6 AC',
-        currentPrice: 18499,
+        name: 'DURAMO SL2 M',
+        currentPrice: 6799,
+        oldPrice: 8999,
         badgeId: 1,
-        brandId: 4,
-        categoryId: 4,
+        brandId: 2,
+        categoryId: 5,
+        sportId: 5,
+        materialId: 2,
+        seasonId: 1,
+        originId: 2,
+        description:
+          'Универсальные кроссовки для бега, командного спорта и силовых тренировок. Легкий верх дополнен мягчайшей подошвой. Бесшовные вставки поддерживают стопу во время ускорений и движений вбок. Детали: стандартная колодка, сетчатый верх, промежуточная подошва Lightmotion, стелька OrthoLite®, резиновая подметка.',
+        isPopular: true,
       },
     ],
   });
 
-  await prisma.image.createMany({
-    data: [
-      {
-        productId: 1,
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLACX553201_21504250_1_v1.jpg',
-      },
-      {
-        productId: 1,
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLACX553201_21504251_2_v1.jpg',
-      },
-      {
-        productId: 1,
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLACX553201_21504252_3_v1.jpg',
-      },
-      {
-        productId: 1,
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLACX553201_21504254_5_v1.jpg',
-      },
-      {
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLADL970801_23230092_1_v1.jpg',
-        productId: 3,
-      },
-      {
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLADL970801_23230093_2_v1.jpg',
-        productId: 3,
-      },
-      {
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLADL970801_23230094_3_v1.jpg',
-        productId: 3,
-      },
-      {
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLADL970801_23230096_5_v1.jpg',
-        productId: 3,
-      },
-      {
-        productId: 2,
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLACX553201_21504250_1_v1.jpg',
-      },
-      {
-        productId: 2,
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLACX553201_21504251_2_v1.jpg',
-      },
-      {
-        productId: 2,
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLACX553201_21504252_3_v1.jpg',
-      },
-      {
-        productId: 2,
-        url: 'https://a.lmcdn.ru/img600x866/R/T/RTLACX553201_21504254_5_v1.jpg',
-      },
-    ],
-  });
+  await seedImages(prisma);
 
-  await prisma.productInfo.createMany({
-    data: [
-      {
-        productId: 1,
-        title: 'О товаре',
-      },
-      {
-        productId: 1,
-        title: 'Описание',
-      },
-      {
-        productId: 2,
-        title: 'О товаре',
-      },
-      {
-        productId: 2,
-        title: 'Описание',
-      },
-      {
-        productId: 3,
-        title: 'О товаре',
-      },
-      {
-        productId: 3,
-        title: 'Описание',
-      },
-    ],
-  });
-
-  await prisma.productDetails.createMany({
-    data: [
-      {
-        info: 'Текстиль',
-        title: 'Материал',
-        productInfoId: 1,
-      },
-      {
-        info: 'Мельти',
-        title: 'Сезон',
-        productInfoId: 1,
-      },
-      {
-        info: 'Кроссовки Wave Exceed Tour 6 Ac. Быстрее, легче и гибче, чем раньше, эта теннисная обувь предназначена для продвинутых игроков, которые ищут максимальную взрывную реакцию. Абсолютно новая конструкция ботинок и обновленный дизайн верха 3D-SOLID обеспечивают большую гибкость и комфорт. Технология MIZUNO WAVE® повышает стабильность лодыжки и перераспределяет ударные нагрузки, а подошва DuRubber обеспечивает надежность и долговечность, необходимые лучшим игрокам.',
-        productInfoId: 2,
-      },
-      {
-        info: 'Резина',
-        title: 'Материал подошвы',
-        productInfoId: 3,
-      },
-      {
-        info: 'Волейбол',
-        title: 'Вид спорта',
-        productInfoId: 3,
-      },
-      {
-        info: 'Кроссовки выполнены из искусственной кожи и текстиля. Промежуточная подошва из пеноматериала ЭВА смягчает удары стопы о поверхность и поглощает вибрации. Немаркая подошва Adiwear.',
-        productInfoId: 4,
-      },
-      {
-        info: 'Текстиль',
-        title: 'Материал',
-        productInfoId: 5,
-      },
-      {
-        info: 'Мельти',
-        title: 'Сезон',
-        productInfoId: 5,
-      },
-      {
-        info: 'Вьетнам',
-        title: 'Страна производства',
-        productInfoId: 5,
-      },
-      {
-        info: 'Кроссовки Wave Exceed Tour 6 Ac. Быстрее, легче и гибче, чем раньше, эта теннисная обувь предназначена для продвинутых игроков, которые ищут максимальную взрывную реакцию. Абсолютно новая конструкция ботинок и обновленный дизайн верха 3D-SOLID обеспечивают большую гибкость и комфорт. Технология MIZUNO WAVE® повышает стабильность лодыжки и перераспределяет ударные нагрузки, а подошва DuRubber обеспечивает надежность и долговечность, необходимые лучшим игрокам.',
-        productInfoId: 6,
-      },
-    ],
-  });
-
-  await prisma.colorValue.createMany({
-    data: [
-      {
-        color: '#000',
-        value: 'черный',
-      },
-      {
-        color: '#fff',
-        value: 'белый',
-      },
-      {
-        color: '#96aed3',
-        value: 'синий',
-      },
-      {
-        color: 'd1a0a0',
-        value: 'розовый',
-      },
-      {
-        color: '#FFA500',
-        value: 'оранжевый',
-      },
-    ],
-  });
-
-  await prisma.sizeValue.createMany({
-    data: [{ value: 40 }, { value: 41 }, { value: 42 }, { value: 43 }],
-  });
-
-  await prisma.size.createMany({
-    data: [
-      {
-        title: 'Размер',
-        type: 'size',
-      },
-      {
-        title: 'Размер',
-        type: 'size',
-      },
-      {
-        title: 'Размер',
-        type: 'size',
-      },
-    ],
-  });
-
-  await prisma.sizeValueOnSize.createMany({
-    data: [
-      {
-        sizeId: 1,
-        sizeValueId: 3,
-      },
-      {
-        sizeId: 1,
-        sizeValueId: 4,
-      },
-      {
-        sizeId: 2,
-        sizeValueId: 2,
-      },
-      {
-        sizeId: 2,
-        sizeValueId: 3,
-      },
-      {
-        sizeId: 2,
-        sizeValueId: 1,
-      },
-      {
-        sizeId: 3,
-        sizeValueId: 2,
-      },
-      {
-        sizeId: 3,
-        sizeValueId: 3,
-      },
-      {
-        sizeId: 3,
-        sizeValueId: 1,
-      },
-    ],
-  });
-
-  await prisma.color.createMany({
-    data: [
-      {
-        title: 'Цвет',
-        type: 'color',
-      },
-      {
-        title: 'Цвет',
-        type: 'color',
-      },
-      {
-        title: 'Цвет',
-        type: 'color',
-      },
-    ],
-  });
-
-  await prisma.colorValueOnColor.createMany({
-    data: [
-      {
-        colorId: 1,
-        colorValueId: 1,
-      },
-      {
-        colorId: 1,
-        colorValueId: 3,
-      },
-      {
-        colorId: 2,
-        colorValueId: 5,
-      },
-      {
-        colorId: 2,
-        colorValueId: 4,
-      },
-      {
-        colorId: 3,
-        colorValueId: 3,
-      },
-    ],
-  });
-
-  await prisma.configuration.createMany({
-    data: [
-      {
-        productId: 1,
-        colorsId: 1,
-        sizesId: 1,
-      },
-      {
-        productId: 2,
-        colorsId: 2,
-        sizesId: 2,
-      },
-      {
-        productId: 3,
-        colorsId: 3,
-        sizesId: 3,
-      },
-    ],
-  });
+  await seedConfiguration(prisma);
 };
 
 main()

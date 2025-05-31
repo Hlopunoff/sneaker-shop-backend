@@ -17,17 +17,41 @@ export class ApiBrandDto {
   name: string;
 }
 
-class ApiCategoryDto {
+export class ApiSportDto {
+  @IsOptional()
+  @IsString()
+  name?: string | null;
+}
+
+export class ApiMaterialDto {
+  @IsOptional()
+  @IsString()
+  name?: string | null;
+}
+
+class ApiSeasonDto {
+  @IsOptional()
+  @IsString()
+  name?: string | null;
+}
+
+export class ApiOriginDto {
+  @IsOptional()
+  @IsString()
+  name?: string | null;
+}
+
+export class ApiCategoryDto {
   @IsString()
   name: string;
 }
 
-class ApiImageDto {
+export class ApiImageDto {
   @IsString()
   url: string;
 }
 
-class ApiProductDetailsItemDto extends ProductDetailsItemClass {}
+export class ApiProductDetailsItemDto extends ProductDetailsItemClass {}
 
 export class ApiProductInfoItemDto {
   @IsString()
@@ -79,6 +103,10 @@ export class ApiProductDto {
   currentPrice: number;
 
   @IsOptional()
+  @IsString()
+  description?: string | null;
+
+  @IsOptional()
   @IsNumber()
   oldPrice?: number | null;
 
@@ -101,9 +129,22 @@ export class ApiProductDto {
   @IsArray()
   images: ApiImageDto[];
 
-  @IsArray()
-  productInfo: ApiProductInfoItemDto[];
-
   @IsObject()
   configuration: ApiProductConfigurationDto;
+
+  @IsOptional()
+  @IsObject()
+  sport?: ApiSportDto | null;
+
+  @IsOptional()
+  @IsObject()
+  season?: ApiSeasonDto | null;
+
+  @IsOptional()
+  @IsObject()
+  material?: ApiMaterialDto | null;
+
+  @IsOptional()
+  @IsObject()
+  origin?: ApiOriginDto | null;
 }

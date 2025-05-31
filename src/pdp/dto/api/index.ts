@@ -1,7 +1,1 @@
-export {
-  ApiProductDto,
-  ApiProductInfoItemDto,
-  ApiColorValueDto,
-  ApiProductConfigurationItemDto,
-  ApiProductConfigurationDto,
-} from './product';
+export * from './product';

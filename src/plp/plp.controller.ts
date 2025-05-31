@@ -6,11 +6,6 @@ import { FiltersDto } from './dto';
 export class PlpController {
   constructor(private readonly plpService: PlpService) {}
 
-  @Get(':category')
-  async getListing(@Param('category') category: string) {
-    return await this.plpService.getListing(category);
-  }
-
   @Post('plp')
   async getListingByFilters(@Body() dto: FiltersDto) {
     return await this.plpService.getListingByFilters(dto);
@@ -20,5 +15,15 @@ export class PlpController {
   @Post('filters')
   async getFilters(@Body() dto: { category: string }) {
     return await this.plpService.getFilters(dto.category);
+  }
+
+  @Get('placements')
+  async getPlacements() {
+    return await this.plpService.getPlacements();
+  }
+
+  @Get(':category')
+  async getListing(@Param('category') category: string) {
+    return await this.plpService.getListing(category);
   }
 }

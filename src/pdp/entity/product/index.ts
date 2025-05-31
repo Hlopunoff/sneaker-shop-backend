@@ -10,9 +10,11 @@ import {
 import {
   ApiColorValueDto,
   ApiProductDto,
-  ApiProductInfoItemDto,
   ApiProductConfigurationItemDto,
   ApiProductConfigurationDto,
+  ApiSportDto,
+  ApiMaterialDto,
+  ApiOriginDto,
 } from '../../dto/api';
 import {
   ColorValueClass,
@@ -20,19 +22,41 @@ import {
   ProductDetailsItemClass,
 } from '../../class';
 
+type ProductInfoTitleType = 'О товаре' | 'Описание';
+
 class ProductInfoItemEntity {
   @IsString()
   title: string;
 
   details: ProductDetailsItemClass[] | string;
 
-  constructor(data: ApiProductInfoItemDto) {
-    this.title = data.title;
+  constructor(
+    title: ProductInfoTitleType,
+    description: string,
+    sport: ApiSportDto,
+    material: ApiMaterialDto,
+    season: ApiSportDto,
+    origin: ApiOriginDto,
+  ) {
+    this.title = title;
 
-    if (data.details.length === 1) {
-      this.details = data.details[0].info;
+    if (title === 'Описание') {
+      this.details = description;
     } else {
-      this.details = data.details;
+      this.details = [];
+
+      if (sport?.name) {
+        this.details.push({ title: 'Вид спорта', info: sport.name });
+      }
+      if (material?.name) {
+        this.details.push({ title: 'Материал', info: material.name });
+      }
+      if (season?.name) {
+        this.details.push({ title: 'Сезон', info: season.name });
+      }
+      if (origin?.name) {
+        this.details.push({ title: 'Страна производства', info: origin.name });
+      }
     }
   }
 }
@@ -163,8 +187,16 @@ export class ProductEntity {
     this.actions = new ActionsEntity(data);
     this.discount = this.getDiscount();
 
-    this.productInfo = data.productInfo.map(
-      (item) => new ProductInfoItemEntity(item),
+    this.productInfo = ['О товаре', 'Описание'].map(
+      (title: ProductInfoTitleType) =>
+        new ProductInfoItemEntity(
+          title,
+          data.description,
+          data.sport,
+          data.material,
+          data.season,
+          data.origin,
+        ),
     );
 
     this.configuration = new ProductConfigurationEntity(data.configuration);
