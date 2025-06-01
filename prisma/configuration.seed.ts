@@ -1,6 +1,10 @@
 import { PrismaClient } from '@prisma/client';
+import { ProductFactory } from './create-product';
 
-export const seedConfiguration = async (prisma: PrismaClient) => {
+export const seedConfiguration = async (
+  prisma: PrismaClient,
+  products: ProductFactory[],
+) => {
   await prisma.colorValue.createMany({
     data: [
       {
@@ -27,122 +31,32 @@ export const seedConfiguration = async (prisma: PrismaClient) => {
   });
 
   await prisma.sizeValue.createMany({
-    data: [{ value: 40 }, { value: 41 }, { value: 42 }, { value: 43 }],
+    data: new Array(11).fill(null).map((_, index) => ({ value: index + 35 })),
   });
 
   await prisma.size.createMany({
-    data: [
-      {
-        title: 'Размер',
-        type: 'size',
-      },
-      {
-        title: 'Размер',
-        type: 'size',
-      },
-      {
-        title: 'Размер',
-        type: 'size',
-      },
-    ],
+    data: new Array(products.length).fill({
+      title: 'Размер',
+      type: 'size',
+    }),
   });
 
   await prisma.sizeValueOnSize.createMany({
-    data: [
-      {
-        sizeId: 1,
-        sizeValueId: 3,
-      },
-      {
-        sizeId: 1,
-        sizeValueId: 4,
-      },
-      {
-        sizeId: 2,
-        sizeValueId: 2,
-      },
-      {
-        sizeId: 2,
-        sizeValueId: 3,
-      },
-      {
-        sizeId: 2,
-        sizeValueId: 1,
-      },
-      {
-        sizeId: 3,
-        sizeValueId: 2,
-      },
-      {
-        sizeId: 3,
-        sizeValueId: 3,
-      },
-      {
-        sizeId: 3,
-        sizeValueId: 1,
-      },
-    ],
+    data: products.map((product) => product.getSizesConfig()).flat(),
   });
 
   await prisma.color.createMany({
-    data: [
-      {
-        title: 'Цвет',
-        type: 'color',
-      },
-      {
-        title: 'Цвет',
-        type: 'color',
-      },
-      {
-        title: 'Цвет',
-        type: 'color',
-      },
-    ],
+    data: new Array(products.length).fill({
+      title: 'Цвет',
+      type: 'color',
+    }),
   });
 
   await prisma.colorValueOnColor.createMany({
-    data: [
-      {
-        colorId: 1,
-        colorValueId: 1,
-      },
-      {
-        colorId: 1,
-        colorValueId: 3,
-      },
-      {
-        colorId: 2,
-        colorValueId: 5,
-      },
-      {
-        colorId: 2,
-        colorValueId: 4,
-      },
-      {
-        colorId: 3,
-        colorValueId: 3,
-      },
-    ],
+    data: products.map((product) => product.getColorConfig()).flat(),
   });
 
   await prisma.configuration.createMany({
-    data: [
-      {
-        productId: 1,
-        colorsId: 1,
-        sizesId: 1,
-      },
-      {
-        productId: 2,
-        colorsId: 2,
-        sizesId: 2,
-      },
-      {
-        productId: 3,
-        colorsId: 3,
-        sizesId: 3,
-      },
-    ],
+    data: products.map((product) => product.getConfig()),
   });
 };

@@ -207,6 +207,6 @@ export class ProductEntity {
 
     const { old, current } = this.prices;
 
-    return +(1 - current / old).toPrecision(2) * 100;
+    return Math.floor(+(1 - current / old).toPrecision(2) * 100);
   }
 }
