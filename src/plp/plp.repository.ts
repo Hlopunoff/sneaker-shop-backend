@@ -75,6 +75,11 @@ export class PlpRepository {
                   select: {
                     sizeValue: true,
                   },
+                  orderBy: {
+                    sizeValue: {
+                      value: 'asc',
+                    },
+                  },
                 },
               },
             },
